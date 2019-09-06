@@ -58,4 +58,66 @@ body > table.page_table
 
 ## 转换 ICalendar 格式
 
-注意时区设置。
+icalendar 格式的规范文档为 [RFC 5545](https://tools.ietf.org/html/rfc5545)
+
+在 Python 的 icalendar 库中，定义了一系列 icalendar 组件，
+在本项目中使用 Calendar 和 Event 两个。
+
+Calendar 类初始化时可以不用参数，但之后必须设定以下属性:
+
+```python
+cal = Calendar()
+# 符合 [ISO.9070.1991] 规范的发行者 ID，
+# 规范要求全球唯一，但我们没有，所以随便用一个。
+cal.add("prodid", "-//Zombie110year//CQU Class Table//")
+# 目前 icalendar 规范是 2.0 版本
+cal.add("version", "2.0")
+```
+
+Event 类同理，但需要注意日期格式
+
+```python
+ev = Event()
+ev.add("summary", "总结性文本")
+ev.add("location", "标注一个位置")
+ev.add("description", "大多数日程管理软件把这个属性显示在标题位置")
+ev.add("dtstart", "事件开始时间戳")
+ev.add("dtend", "事件结束时间戳")
+ev.add("rrule", {"freq": "dayly", "count": 14})
+```
+
+dtstart 和 dtend 就是时间的开始/结束时间。dt* 属性需要 UTC 格式时间戳，其形式类似于：
+
+```
+19970610T172345Z
+```
+
+用 strftime 格式字符串来表示的话就是
+
+```
+%Y%m%dT%H%M%SZ
+```
+
+末尾的 Z 表示采用 UTC 0 时区。
+
+Event 可以设置重复规则 (Recurrence Rule)，可以设置多个键值对。
+
+- FREQ，间隔单位，可选值有：
+    - SECONDLY， 表示以秒为间隔单位进行重复。
+    - MINUTELY， 表示以分钟为间隔单位进行重复。
+    - HOURLY， 表示以小时为间隔单位进行重复。
+    - DAILY， 表示以天为间隔单位进行重复。
+    - WEEKLY， 表示以周为间隔单位进行重复。
+    - MONTHLY， 表示以月为间隔单位进行重复。
+    - YEARLY， 表示以年为间隔单位进行重复。
+- INTERVAL，间隔量，以 FREQ 设定的单位为基础，默认值为 1。
+- UNTIL，结束日期时间，用来限制重复次数。
+- COUNT，重复次数的限制，如果 Event 既没有设置 COUNT， 也没有设置 UNTIL，那么将无限重复。
+
+其他属性暂时不会用到，所以就不记录了。
+
+对于 icalendar，此设置需要传入一个字典。
+
+在得到 Event 实例后，可以调用 Calendar 的 `add_component` 方法将 Event 添加到 Calendar 中。
+
+调用 Calendar 的 `to_ical` 方法，生成符合规范的 ics 文件内容（是 Python 中的 bytes 对象）。

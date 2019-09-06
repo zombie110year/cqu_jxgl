@@ -85,7 +85,7 @@ class 课程:
         self._节次 = 节次
         self._地点 = 地点
         self._作息时间 = 作息时间
-    
+
     @property
     def 课程代码(self) -> str:
         """形如 MSE30005 的课程代码"""

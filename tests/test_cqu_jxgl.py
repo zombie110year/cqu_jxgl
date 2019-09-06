@@ -1,8 +1,10 @@
+from datetime import timedelta
+
 from bs4 import BeautifulSoup
 
 from cqu_jxgl import __version__
-from cqu_jxgl.table import text_or_hidevalue
-from cqu_jxgl.table import make_range
+from cqu_jxgl.table import make_range, make_week_offset, text_or_hidevalue
+from cqu_jxgl.data.time import 沙坪坝校区作息时间
 
 
 def test_version():
@@ -54,3 +56,19 @@ def test_make_range():
     assert make_range("1,6,9") == (1, 6, 9)
     assert make_range("11,15-17") == (11, 15, 16, 17)
     assert make_range("14") == (14, )
+
+
+def test_make_week_offset():
+    # 以沙坪坝作息时间测试
+    assert make_week_offset(
+        "一[1-2节]", 沙坪坝校区作息时间) == (timedelta(hours=8), timedelta(hours=9, minutes=40))
+    assert make_week_offset("一[9-10节]", 沙坪坝校区作息时间) == (
+        timedelta(hours=19, minutes=30), timedelta(hours=21, minutes=10))
+    assert make_week_offset("三[3-4节]", 沙坪坝校区作息时间) == (timedelta(
+        days=2, hours=10, minutes=10), timedelta(days=2, hours=11, minutes=50))
+    assert make_week_offset("五[1-4节]", 沙坪坝校区作息时间) == (
+        timedelta(days=4, hours=8), timedelta(days=4, hours=11, minutes=50))
+    assert make_week_offset("六[7-8节]", 沙坪坝校区作息时间) == (timedelta(
+        days=5, hours=16, minutes=40), timedelta(days=5, hours=18, minutes=20))
+    assert make_week_offset("日[5-8节]", 沙坪坝校区作息时间) == (timedelta(
+        days=6, hours=14, minutes=30), timedelta(days=6, hours=18, minutes=20))

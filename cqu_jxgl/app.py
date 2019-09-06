@@ -2,7 +2,12 @@
 
 主要的应用逻辑
 """
+from datetime import datetime
+
+from .data.time import 沙坪坝校区作息时间, 虎溪校区作息时间
 from .login import Session
+from .table import make_ical
+
 
 class App:
     def __init__(self, username: str, password: str):
@@ -22,3 +27,11 @@ class App:
             return resp.text
         else:
             return ""
+
+    def writeICS(self, 学年学期: int, 学期开始日期: datetime, 作息时间: dict):
+        """获取课程表, 解析并写入 icalendar 文件"""
+        html = self.getRawClassTable(学年学期)
+        ical = make_ical(html, 学期开始日期, 作息时间)
+        with open("class-table.ics", "wb") as out:
+            out.write(ical)
+            print("write file: class-table.ics")

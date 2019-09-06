@@ -209,11 +209,11 @@ def parse_课程(html: BeautifulSoup, 作息: dict) -> "generate[课程]":
     for attributes, table in zip(html.select("div.page_group > table > tr > td"), html.select("body > table.page_table")):
         if "讲授/上机" in attributes.text:
             # 理论课
-            for tr in table.select("tr"):
+            for tr in table.select("tbody > tr"):
                 yield parse_理论课(tr, 作息)
         elif "实验" in attributes.text:
             # 实验课
-            for tr in table.select("tr"):
+            for tr in table.select("tbody > tr"):
                 yield parse_实验课(tr, 作息)
 
 def parse_理论课(tr: Tag, 作息: dict) -> 理论课:

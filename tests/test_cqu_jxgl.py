@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 
 from cqu_jxgl import __version__
 from cqu_jxgl.table import text_or_hidevalue
+from cqu_jxgl.table import make_range
 
 
 def test_version():
@@ -45,3 +46,11 @@ def test_text_or_hidevalue():
     res = list(map(lambda td: text_or_hidevalue(td), html.select("td")))
     for a, r in zip(ans, res):
         assert a == r
+
+
+def test_make_range():
+    assert make_range("1-9") == (1, 2, 3, 4, 5, 6, 7, 8, 9)
+    assert make_range("1-4,6-9") == (1, 2, 3, 4, 6, 7, 8, 9)
+    assert make_range("1,6,9") == (1, 6, 9)
+    assert make_range("11,15-17") == (11, 15, 16, 17)
+    assert make_range("14") == (14, )

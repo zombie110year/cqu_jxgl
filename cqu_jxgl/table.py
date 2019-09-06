@@ -194,3 +194,27 @@ class 实验课(课程):
     @property
     def ical_location(self):
         return f"{self.地点}"
+
+
+def parse_课程(html: BeautifulSoup, 作息: dict) -> "generate[课程]":
+    """从获取的 html 中解析出课程实例
+    """
+    for attributes, table in zip(html.select("div.page_group > table > tr > td"), html.select("body > table.page_table")):
+        if "讲授/上机" in attributes.text:
+            # 理论课
+            for tr in table.select("tr"):
+                yield parse_理论课(tr, 作息)
+        elif "实验" in attributes.text:
+            # 实验课
+            for tr in table.select("tr"):
+                yield parse_实验课(tr, 作息)
+
+def parse_理论课(tr: Tag, 作息: dict) -> 理论课:
+    # [1:] 是为了把序号去掉
+    tds = list(map(text_or_hidevalue, tr.select("td")))[1:]
+    return 理论课(*tds, 作息)
+
+def parse_实验课(tr: Tag, 作息: dict) -> 实验课:
+    # [1:] 是为了把序号去掉
+    tds = list(map(text_or_hidevalue, tr.select("td")))[1:]
+    return 实验课(*tds, 作息)

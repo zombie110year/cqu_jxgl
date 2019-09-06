@@ -3,8 +3,9 @@ from datetime import timedelta
 from bs4 import BeautifulSoup
 
 from cqu_jxgl import __version__
-from cqu_jxgl.table import make_range, make_week_offset, text_or_hidevalue, 课程
 from cqu_jxgl.data.time import 沙坪坝校区作息时间
+from cqu_jxgl.table import (make_range, make_week_offset, parse_实验课, parse_理论课,
+                            text_or_hidevalue, 实验课, 理论课, 课程)
 
 
 def test_version():
@@ -82,3 +83,75 @@ def test_课程():
     assert x.课程名 == "材料X射线衍射与电子显微学"
     assert list(x.课程时间) == [(timedelta(days=14, hours=19, minutes=30), timedelta(
         days=14, hours=21, minutes=10)), ]
+
+
+def test_parse_理论课():
+    html = BeautifulSoup("""<tr><td style="width:4%;text-align:center">20<br/></td>
+    <td style="width:21%;text-align:left">[META30010]冶金学导论<br/></td>
+    <td style="width:4%;text-align:right">2.00<br/></td>
+    <td style="width:5%;text-align:right">32.0<br/></td>
+    <td style="width:4%;text-align:right">32.0<br/></td>
+    <td style="width:4%;text-align:right">0.0<br/></td>
+    <td style="width:10%;text-align:left">专业基础选修课<br/></td>
+    <td style="width:5%;text-align:left">理论<br/></td>
+    <td style="width:5%;text-align:center">考试<br/></td>
+    <td style="width:7%;text-align:left">刘守平<br/></td>
+    <td style="width:9%;text-align:left">1-4,6-9<br/></td>
+    <td style="width:9%;text-align:left">五[5-6节]<br/></td>
+    <td style="width:13%;text-align:left">B二417<br/></td>
+    </tr>""", "lxml")
+    tr = html.select_one("tr")
+    x = parse_理论课(tr, 沙坪坝校区作息时间)
+    y = 理论课("[META30010]冶金学导论", "2.00", "32.0", "32.0", "0.0",
+            "专业基础选修课", "理论", "考试", "刘守平", "1-4,6-9",
+            "五[5-6节]", "B二417", 沙坪坝校区作息时间)
+
+    assert x._课程代码 == y._课程代码
+    assert x._课程名 == y._课程名
+    assert x._学分 == y._学分
+    assert x._总学时 == y._总学时
+    assert x._讲授学时 == y._讲授学时
+    assert x._上机学时 == y._上机学时
+    assert x._任课教师 == y._任课教师
+    assert x._周次 == y._周次
+    assert x._节次 == y._节次
+    assert x._地点 == y._地点
+    assert x._作息时间 == y._作息时间
+    assert x.类别 == y.类别
+    assert x.授课方式 == y.授课方式
+    assert x.考核方式 == y.考核方式
+
+
+def test_parse_实验课():
+    html = BeautifulSoup("""<tr>
+    <td style='width:4%;text-align:center'>3<br></td>
+    <td style='width:15%;text-align:left' hidevalue='[MSE31001]材料X射线衍射与电子显微学'><br></td>
+    <td style='width:4%;text-align:right' hidevalue='3.00'><br></td>
+    <td style='width:4%;text-align:right' hidevalue='48.0'><br></td>
+    <td style='width:4%;text-align:right' hidevalue='40.0'><br></td>
+    <td style='width:4%;text-align:right' hidevalue='0.0'><br></td>
+    <td style='width:15%;text-align:left'>MSE31001-003点阵参数的精确测定<br></td>
+    <td style='width:10%;text-align:left'>刘传璞<br></td>
+    <td style='width:10%;text-align:left'>辛仁龙<br></td>
+    <td style='width:9%;text-align:left'>06<br></td>
+    <td style='width:8%;text-align:left'>一[9-10节]<br></td>
+    <td style='width:13%;text-align:left'>A综合实验楼410<br></td>
+    </tr>""", "lxml")
+    tr = html.select_one("tr")
+    x = parse_实验课(tr, 沙坪坝校区作息时间)
+    y = 实验课("[MSE31001]材料X射线衍射与电子显微学", "3.00", "48.0", "40.0", "0.0",
+            "MSE31001-003点阵参数的精确测定", "刘传璞", "辛仁龙", "06", "一[9-10节]",
+            "A综合实验楼410", 沙坪坝校区作息时间)
+    assert x._课程代码 == y._课程代码
+    assert x._课程名 == y._课程名
+    assert x._学分 == y._学分
+    assert x._总学时 == y._总学时
+    assert x._讲授学时 == y._讲授学时
+    assert x._上机学时 == y._上机学时
+    assert x._任课教师 == y._任课教师
+    assert x._周次 == y._周次
+    assert x._节次 == y._节次
+    assert x._地点 == y._地点
+    assert x._作息时间 == y._作息时间
+    assert x.课程项目 == y.课程项目
+    assert x.实验值班教师 == y.实验值班教师

@@ -6,6 +6,7 @@ import re
 from datetime import datetime, timedelta
 
 from bs4 import BeautifulSoup, Tag
+from icalendar import Calendar, Event
 
 from .data.time import 沙坪坝校区作息时间, 虎溪校区作息时间, 周, 周_中文转数字
 
@@ -135,7 +136,7 @@ class 课程:
 
     @property
     def 课程时间(self) -> (timedelta, timedelta):
-        """生成本学期内此课程的所有上课时间(相对于每周第一天)
+        """生成本学期内此课程的上课时间(相对于每周第一天)
         """
         上课, 下课 = make_week_offset(self._节次, self._作息时间)
         return 上课, 下课
@@ -224,3 +225,25 @@ def parse_实验课(tr: Tag, 作息: dict) -> 实验课:
     # [1:] 是为了把序号去掉
     tds = list(map(text_or_hidevalue, tr.select("td")))[1:]
     return 实验课(*tds, 作息)
+
+def make_ical(html: str, 学期开始日期: datetime, 作息: dict) -> bytes:
+    cal = Calendar()
+    cal.add("prodid", "-//Zombie110year//CQU Class Table//")
+    cal.add("version", "2.0")
+    for 课程 in parse_课程(BeautifulSoup(html, 'lxml'), 作息):
+        cal.add_component(build_event(课程, 学期开始日期))
+    return cal.to_ical()
+
+def build_event(课程, 学期开始日期: datetime) -> Event:
+    ev = Event()
+    ev.add("summary", 课程.ical_title)
+    ev.add("location", 课程.ical_location)
+    ev.add("description", 课程.ical_summary)
+    上课, 下课 = 课程.课程时间
+    ev.add("dtstart", 上课 + 学期开始日期)
+    ev.add("dtend", 下课 + 学期开始日期)
+    ev.add("rrule", {
+        "freq": "weekly",
+        "count": len(flat_ranges(make_range(课程._周次)))
+    })
+    return ev

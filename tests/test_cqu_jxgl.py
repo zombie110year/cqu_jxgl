@@ -1,12 +1,12 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from bs4 import BeautifulSoup
 
 from cqu_jxgl import __version__
 from cqu_jxgl.data.time import 沙坪坝校区作息时间
-from cqu_jxgl.table import (flat_ranges, make_range, make_week_offset,
-                            parse_实验课, parse_理论课, text_or_hidevalue, 实验课, 理论课,
-                            课程)
+from cqu_jxgl.table import (build_event, flat_ranges, make_range,
+                            make_week_offset, parse_实验课, parse_理论课,
+                            text_or_hidevalue, 实验课, 理论课, 课程)
 
 
 def test_version():
@@ -63,9 +63,10 @@ def test_make_range():
 
 def test_flat_ranges():
     assert flat_ranges([range(1, 3), range(4, 9)]) == [1, 2, 4, 5, 6, 7, 8]
-    assert flat_ranges([range(1, 3),]) == [1, 2]
-    assert flat_ranges([range(4),]) == [0, 1, 2, 3]
+    assert flat_ranges([range(1, 3), ]) == [1, 2]
+    assert flat_ranges([range(4), ]) == [0, 1, 2, 3]
     assert flat_ranges([]) == []
+
 
 def test_make_week_offset():
     # 以沙坪坝作息时间测试
@@ -88,7 +89,8 @@ def test_课程():
            "辛仁龙", "03", "一[9-10节]", "A综合实验楼410", 沙坪坝校区作息时间)
     assert x.课程代码 == "MSE31001"
     assert x.课程名 == "材料X射线衍射与电子显微学"
-    assert x.课程时间 == (timedelta(hours=19, minutes=30), timedelta(hours=21, minutes=10))
+    assert x.课程时间 == (timedelta(hours=19, minutes=30),
+                      timedelta(hours=21, minutes=10))
 
 
 def test_parse_理论课():
@@ -161,3 +163,12 @@ def test_parse_实验课():
     assert x._作息时间 == y._作息时间
     assert x.课程项目 == y.课程项目
     assert x.实验值班教师 == y.实验值班教师
+
+
+def test_build_event():
+    c = 理论课("[META30010]冶金学导论", "2.00", "32.0", "32.0", "0.0",
+            "专业基础选修课", "理论", "考试", "刘守平", "1-4,6-9",
+            "五[5-6节]", "B二417", 沙坪坝校区作息时间)
+    ev = build_event(c, datetime(2019, 9, 2))
+    out = ev.to_ical()
+    assert out == b'BEGIN:VEVENT\r\nSUMMARY:\xe5\x86\xb6\xe9\x87\x91\xe5\xad\xa6\xe5\xaf\xbc\xe8\xae\xba\r\nDTSTART;VALUE=DATE-TIME:20190906T143000\r\nDTEND;VALUE=DATE-TIME:20190906T161000\r\nRRULE:FREQ=WEEKLY;COUNT=8\r\nDESCRIPTION:\xe8\x80\x83\xe6\xa0\xb8\xe6\x96\xb9\xe5\xbc\x8f: \xe8\x80\x83\xe8\xaf\x95\\, \xe7\xb1\xbb\xe5\x88\xab: \xe4\xb8\x93\xe4\xb8\x9a\xe5\x9f\xba\xe7\xa1\x80\xe9\x80\x89\xe4\xbf\xae\xe8\xaf\xbe\r\nLOCATION:B\xe4\xba\x8c417\r\nEND:VEVENT\r\n'

@@ -57,19 +57,21 @@ class Session(r.Session):
         根据响应内容，应当等待 680ms 后重新加载以刷新 Cookie
         """
         url = "http://jxgl.cqu.edu.cn/home.aspx"
-        pattern = "(?<=document.cookie=')DSafeId=([A-Z0-9]+);(?=';)"
+        pattern = re.compile(r"(?<=document.cookie=')DSafeId=([A-Z0-9]+);(?=';)")
         resp = self.get(url)
-        first_cookie = re.search(pattern, resp.text).group(1)
-        self.cookies.set("DSafeId", first_cookie)
-        sleep(0.680)
-        resp = self.get(url)
-        new_cookie = resp.headers.get("set-cookie", self.cookies.get_dict())
-        c = {
-            1: re.search("(?<=ASP.NET_SessionId=)([a-zA-Z0-9]+)(?=;)", new_cookie).group(1),
-            2: re.search("(?<=_D_SID=)([A-Z0-9]+)(?=;)", new_cookie).group(1)
-        }
-        self.cookies.set("ASP.NET_SessionId", c[1])
-        self.cookies.set("_D_SID", c[2])
+        # 偶尔不需要设置 cookie, 直接就进入主页了
+        if pattern.search(resp.text):
+            first_cookie = re.search(pattern, resp.text).group(1)
+            self.cookies.set("DSafeId", first_cookie)
+            sleep(0.680)
+            resp = self.get(url)
+            new_cookie = resp.headers.get("set-cookie", self.cookies.get_dict())
+            c = {
+                1: re.search("(?<=ASP.NET_SessionId=)([a-zA-Z0-9]+)(?=;)", new_cookie).group(1),
+                2: re.search("(?<=_D_SID=)([A-Z0-9]+)(?=;)", new_cookie).group(1)
+            }
+            self.cookies.set("ASP.NET_SessionId", c[1])
+            self.cookies.set("_D_SID", c[2])
 
     def sendLogin(self):
         """发送登录表单

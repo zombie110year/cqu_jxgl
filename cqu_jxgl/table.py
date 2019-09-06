@@ -136,10 +136,12 @@ class 课程:
 
     @property
     def 课程时间(self) -> (timedelta, timedelta):
-        """生成本学期内此课程的上课时间(相对于每周第一天)
+        """生成本学期内此课程的第一节课的上课下课时间(相对于学期开始)
         """
+        第一课周次 = flat_ranges(make_range(self._周次))[0]
+        base = timedelta(days=7) * (第一课周次 - 1)
         上课, 下课 = make_week_offset(self._节次, self._作息时间)
-        return 上课, 下课
+        return base + 上课, base + 下课
 
     @property
     def ical_title(self):

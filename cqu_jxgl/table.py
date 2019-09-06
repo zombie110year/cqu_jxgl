@@ -19,7 +19,7 @@ def text_or_hidevalue(td: Tag) -> str:
     if value:
         return value
     else:
-        return td["hidevalue"]
+        return td.attrs.get("hidevalue", "Unknown")
 
 
 def make_range(string: str) -> 'tuple[range]':

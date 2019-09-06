@@ -21,16 +21,24 @@ def text_or_hidevalue(td: Tag) -> str:
         return td["hidevalue"]
 
 
-def make_range(string: str) -> 'tuple[int]':
-    """将 ``1-9``, ``1-4,6-9`` 这样的字符串解析为数字序列。
-    区间是闭合的
+def make_range(string: str) -> 'tuple[range]':
+    """将 ``1-9``, ``1-4,6-9`` 这样的字符串解析为 range 组成的序列。
+    源字符串中 ``s-e`` 表示一个闭区间
     """
     ans = list()
     for component in string.split(","):
         r = tuple(map(lambda x: int(x), component.split("-")))
-        for i in range(r[0], r[-1] + 1):
-            ans.append(i)
+        ans.append(range(r[0], r[-1] + 1))
     return tuple(ans)
+
+
+def flat_ranges(ranges: list) -> list:
+    """展开 ranges 组成的列表
+    """
+    ans = []
+    for r in ranges:
+        ans.extend(r)
+    return ans
 
 
 def make_week_offset(string: str, 作息时间: dict) -> (timedelta, timedelta):
@@ -126,13 +134,11 @@ class 课程:
         return self._地点
 
     @property
-    def 课程时间(self) -> "generator[(timedelta, timedelta)]":
-        """生成本学期内此课程的所有上课时间(相对于第一周第一天)
+    def 课程时间(self) -> (timedelta, timedelta):
+        """生成本学期内此课程的所有上课时间(相对于每周第一天)
         """
-        for week in make_range(self._周次):
-            base = timedelta(days=7) * (week - 1)
-            上课, 下课 = make_week_offset(self._节次, self._作息时间)
-            yield base + 上课, base + 下课
+        上课, 下课 = make_week_offset(self._节次, self._作息时间)
+        return 上课, 下课
 
     @property
     def ical_title(self):

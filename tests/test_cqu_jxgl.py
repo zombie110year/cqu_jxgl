@@ -4,8 +4,9 @@ from bs4 import BeautifulSoup
 
 from cqu_jxgl import __version__
 from cqu_jxgl.data.time import 沙坪坝校区作息时间
-from cqu_jxgl.table import (make_range, make_week_offset, parse_实验课, parse_理论课,
-                            text_or_hidevalue, 实验课, 理论课, 课程)
+from cqu_jxgl.table import (flat_ranges, make_range, make_week_offset,
+                            parse_实验课, parse_理论课, text_or_hidevalue, 实验课, 理论课,
+                            课程)
 
 
 def test_version():
@@ -52,13 +53,19 @@ def test_text_or_hidevalue():
 
 
 def test_make_range():
-    assert make_range("1-9") == (1, 2, 3, 4, 5, 6, 7, 8, 9)
-    assert make_range("1-4,6-9") == (1, 2, 3, 4, 6, 7, 8, 9)
-    assert make_range("1,6,9") == (1, 6, 9)
-    assert make_range("11,15-17") == (11, 15, 16, 17)
-    assert make_range("14") == (14, )
-    assert make_range("03") == (3, )
+    assert make_range("1-9") == (range(1, 10), )
+    assert make_range("1-4,6-9") == (range(1, 5), range(6, 10))
+    assert make_range("1,6,9") == (range(1, 2), range(6, 7), range(9, 10))
+    assert make_range("11,15-17") == (range(11, 12), range(15, 18))
+    assert make_range("14") == (range(14, 15), )
+    assert make_range("03") == (range(3, 4), )
 
+
+def test_flat_ranges():
+    assert flat_ranges([range(1, 3), range(4, 9)]) == [1, 2, 4, 5, 6, 7, 8]
+    assert flat_ranges([range(1, 3),]) == [1, 2]
+    assert flat_ranges([range(4),]) == [0, 1, 2, 3]
+    assert flat_ranges([]) == []
 
 def test_make_week_offset():
     # 以沙坪坝作息时间测试
@@ -81,8 +88,7 @@ def test_课程():
            "辛仁龙", "03", "一[9-10节]", "A综合实验楼410", 沙坪坝校区作息时间)
     assert x.课程代码 == "MSE31001"
     assert x.课程名 == "材料X射线衍射与电子显微学"
-    assert list(x.课程时间) == [(timedelta(days=14, hours=19, minutes=30), timedelta(
-        days=14, hours=21, minutes=10)), ]
+    assert x.课程时间 == (timedelta(hours=19, minutes=30), timedelta(hours=21, minutes=10))
 
 
 def test_parse_理论课():

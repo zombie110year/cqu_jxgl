@@ -56,6 +56,7 @@ def test_make_range():
     assert make_range("1,6,9") == (1, 6, 9)
     assert make_range("11,15-17") == (11, 15, 16, 17)
     assert make_range("14") == (14, )
+    assert make_range("03") == (3, )
 
 
 def test_make_week_offset():

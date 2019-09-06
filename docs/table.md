@@ -22,6 +22,27 @@ Sel_XNXQ=20190&rad=on&px=1
 
 理论课表头存在字符串 `讲授/上机`，实验课则是 `实验`。
 
+在 html 页面中，是这样的结构：
+
+```html
+<div group="group" class="page_group"><!-- 声明下一个相邻表类型 --></div>
+<table class="page_table"><!-- 表 --></table>
+<!-- ... -->
+<div group="group" class="page_group"><!-- 声明下一个相邻表类型 --></div>
+<table class="page_table"><!-- 表 --></table>
+```
+
+由于数目与位置严格对应，因此用选择器:
+
+```
+# 注意没有 tbody
+div.page_group[group="group"] > table > tr > td
+# div.page_group 里也有 table.page_table，所以用 body 限制一下
+body > table.page_table
+```
+
+分别选出两个列表，前者记录了对应的表属于理论课还是实验课，后者是各课程信息。
+
 理论课中一个元组按
 
 ("序号", "课程", "学分", "总学时", "讲授学时", "上机学时",

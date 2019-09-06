@@ -3,7 +3,7 @@ from datetime import timedelta
 from bs4 import BeautifulSoup
 
 from cqu_jxgl import __version__
-from cqu_jxgl.table import make_range, make_week_offset, text_or_hidevalue
+from cqu_jxgl.table import make_range, make_week_offset, text_or_hidevalue, 课程
 from cqu_jxgl.data.time import 沙坪坝校区作息时间
 
 
@@ -73,3 +73,12 @@ def test_make_week_offset():
         days=5, hours=16, minutes=40), timedelta(days=5, hours=18, minutes=20))
     assert make_week_offset("日[5-8节]", 沙坪坝校区作息时间) == (timedelta(
         days=6, hours=14, minutes=30), timedelta(days=6, hours=18, minutes=20))
+
+
+def test_课程():
+    x = 课程("[MSE31001]材料X射线衍射与电子显微学", "3.0", "48.0", "40.0", "0.0",
+           "辛仁龙", "03", "一[9-10节]", "A综合实验楼410", 沙坪坝校区作息时间)
+    assert x.课程代码 == "MSE31001"
+    assert x.课程名 == "材料X射线衍射与电子显微学"
+    assert list(x.课程时间) == [(timedelta(days=14, hours=19, minutes=30), timedelta(
+        days=14, hours=21, minutes=10)), ]

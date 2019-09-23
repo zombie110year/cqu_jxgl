@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<body leftmargin="0" marginheight="0" marginwidth="0" oncontextmenu="window.event.returnValue=false"
+    ondragstart="window.event.returnValue=false" onselectstart="window.event.returnValue=false"
+    onsource="window.event.returnValue=false" topmargin="0">
+    <form method="post" name="FormAdd">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="99%">
+            <tr style="height:28">
+                <td width="80%">
+                    注：每种授课方式分别可以选择一个上课班级，且每种授课方式必须选择一个上课班级才能提交。
+                </td>
+                <td align="right" style="height:28" width="20%">
+                    <input class="button" disabled="" id="sure" name="submit" onclick="ChkValue()" type="button"
+                        value="确定" />
+                    <input class="button" name="submit" onclick="window.close()" type="button" value="关闭" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div style="OVERFLOW:auto;WIDTH:100%;HEIGHT:100%">
+                        <table border="0" cellpadding="0" cellspacing="0" id="pageRpt" width="100%">
+                            <tr>
+                                <td>
+                                    理论
+                                    <br />
+                                    <table align="center" border="1" bordercolordark="#FFFFFF"
+                                        bordercolorlight="#89bfa7" cellpadding="0" cellspacing="0" valign="top"
+                                        width="100%">
+                                        <tr class="T">
+                                            <td align="center" rowspan="2" width="15%">
+                                                上课班组
+                                            </td>
+                                            <td align="center" rowspan="2" width="8%">
+                                                任课教师
+                                            </td>
+                                            <td align="center" rowspan="2" width="5%">
+                                                上课
+                                                <br />
+                                                班号
+                                            </td>
+                                            <td align="center" rowspan="2" width="13%">
+                                                上课班级名称
+                                                <br />
+                                            </td>
+                                            <td align="center" colspan="3" rowspan="1" width="15%">
+                                                人数
+                                            </td>
+                                            <td align="center" rowspan="2" width="23%">
+                                                上课时间
+                                            </td>
+                                            <td align="center" rowspan="2" width="16%">
+                                                上课地点
+                                            </td>
+                                            <td align="center" rowspan="2" width="5%">
+                                                选定
+                                            </td>
+                                        </tr>
+                                        <tr class="T">
+                                            <td align="center" width="5%">
+                                                限选
+                                            </td>
+                                            <td align="center" width="5%">
+                                                已选
+                                            </td>
+                                            <td align="center" width="5%">
+                                                可选
+                                            </td>
+                                        </tr>
+                                        <tr class="B">
+                                            <td rowspan="2">
+                                                <br />
+                                            </td>
+                                            <td rowspan="2">
+                                                <a href="#" id="showD" onclick="openWin(this)"
+                                                    value="2jtbn52gt29c1mzz1j00004f&amp;param2=66e47179dead9f41a7da3ee71765e057">
+                                                    张永祥
+                                                </a>
+                                                <br />
+                                            </td>
+                                            <td align="center" rowspan="2">
+                                                001
+                                                <br />
+                                            </td>
+                                            <td rowspan="2">
+                                                <br />
+                                            </td>
+                                            <td align="right" rowspan="2">
+                                                66
+                                                <br />
+                                            </td>
+                                            <td align="right" rowspan="2">
+                                                66
+                                                <br />
+                                            </td>
+                                            <td align="right" rowspan="2">
+                                                0
+                                                <br />
+                                            </td>
+                                            <td style="height:20">
+                                                3-4,6-16周 三(9-10节)
+                                                <br />
+                                            </td>
+                                            <td>
+                                                A5208(A区)
+                                                <br />
+                                            </td>
+                                            <td align="center" rowspan="2">
+                                                <input align="center" disabled="" id="rad_0" name="rad_0"
+                                                    onclick="selectRadio(this)" skbz="" type="radio"
+                                                    value="[001]张永祥@0@E0T0003052K378211-001B" />
+                                            </td>
+                                        </tr>
+                                        <tr class="B">
+                                            <td style="height:20">
+                                                3-4,6-17周 二(1-2节)
+                                                <br />
+                                            </td>
+                                            <td>
+                                                A5103(A区)
+                                                <br />
+                                            </td>
+                                        </tr>
+                                        <tr class="B">
+                                            <td rowspan="3">
+                                                <br />
+                                            </td>
+                                            <td rowspan="3">
+                                                <a href="#" id="showD" onclick="openWin(this)"
+                                                    value="2jtbn52gt29c1nlktf00004k&amp;param2=98890076238c0d0392a7fe27529574e3">
+                                                    郭开元
+                                                </a>
+                                                <br />
+                                            </td>
+                                            <td align="center" rowspan="3">
+                                                014
+                                                <br />
+                                            </td>
+                                            <td rowspan="3">
+                                                <br />
+                                            </td>
+                                            <td align="right" rowspan="3">
+                                                90
+                                                <br />
+                                            </td>
+                                            <td align="right" rowspan="3">
+                                                70
+                                                <br />
+                                            </td>
+                                            <td align="right" rowspan="3">
+                                                20
+                                                <br />
+                                            </td>
+                                            <td style="height:20">
+                                                1-4,6-15周 三(5-6节)
+                                                <br />
+                                            </td>
+                                            <td>
+                                                D1142(D区)
+                                                <br />
+                                            </td>
+                                            <td align="center" rowspan="3">
+                                                <input align="center" id="rad_26" name="rad_0"
+                                                    onclick="selectRadio(this)" skbz="" type="radio"
+                                                    value="[014]郭开元@0@E0T0004817K378211-014B" />
+                                            </td>
+                                        </tr>
+                                        <tr class="B">
+                                            <td style="height:20">
+                                                1-4,6-8周 一(9-10节)
+                                                <br />
+                                            </td>
+                                            <td>
+                                                D1338(D区)
+                                                <br />
+                                            </td>
+                                        </tr>
+                                        <tr class="B">
+                                            <td style="height:20">
+                                                10-15周 五(1-2节)
+                                                <br />
+                                            </td>
+                                            <td>
+                                                D1344(D区)
+                                                <br />
+                                            </td>
+                                        </tr>
+                                        <input id="hid_skfs" name="hid_skfs" type="hidden" value="0" />
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

@@ -3,6 +3,9 @@ name = "cqu_jxgl"
 version = "0.1.0"
 description = ""
 authors = ["zombie110year <zombie110year@outlook.com>"]
+package = [
+    {include="cqu_jxgl"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -23,3 +26,6 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+cqu_schedule = "cqu_jxgl.cli:main"

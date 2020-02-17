@@ -1,3 +1,5 @@
+（已弃用，请移步 <https://github.com/zombie110year/cli_cqu>）
+
 这是为重庆大学教学管理网站编写的 Python 工具，支持以下功能：
 
 - [x] 将课程表导出为 ics 文件
